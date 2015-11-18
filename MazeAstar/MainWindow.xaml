@@ -1,0 +1,63 @@
+﻿<controls:MetroWindow x:Class="MazeAstar.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MazeAstar"
+        mc:Ignorable="d"
+        Title="MazeAstar" Height="500" Width="733.682"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" BorderThickness="1"
+                      Style="{DynamicResource CustomDefaultWindowStyle}"
+                      ContentRendered="MainWindow_OnContentRendered"
+                      SizeChanged="MainWindow_OnSizeChanged"
+                      KeyDown="MainWindow_OnKeyDown">
+    <controls:MetroWindow.Effect>
+        <DropShadowEffect/>
+    </controls:MetroWindow.Effect>
+    
+    <Grid>
+        <Border x:Name ="ImageBorder" BorderBrush="White" BorderThickness="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
+            <Image x:Name="ResultImage"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MouseDown="ResultImage_OnMouseDown" Loaded="ResultImage_OnLoaded" MouseMove="ResultImage_OnMouseMove"/>
+        </Border>
+    </Grid>
+
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Name="OpenSettingsButton" Content="Settings" Click="ButtonSettins_OnClick"/>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout Header="Settings" Position="Right" Width="200" Name="SettingsFlyout">
+                <DockPanel HorizontalAlignment="Left" Height="420" LastChildFill="False" VerticalAlignment="Top" Width="160" Margin="10,10,0,0">
+                    <StackPanel  Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Stretch" DockPanel.Dock="Top" >
+                        <Label x:Name="CellSizeLabel" Content="Cell size" Height="30"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="60"/>
+                        <Slider x:Name="CellSizeSlider" Minimum="10" Maximum="400" AutoToolTipPlacement="TopLeft" Value="50" ValueChanged="MazeSizeSlider_OnValueChanged"/>
+                    </StackPanel>
+                    <StackPanel  Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Stretch" DockPanel.Dock="Top" >
+                        <Label x:Name="HeuristicLabel" Content="Heuristic" Height="30"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="60"/>
+                        <ToggleButton Name="EuclideanBtn" Content="Euclidean" Margin="3" IsChecked="True" Checked="EuclideanButton_OnChecked"/>
+                        <ToggleButton Name="ManhattanBtn" Content="Manhattan" Margin="3" Checked="ManhattanBtn_OnChecked"/>
+                        <ToggleButton Name="ChebyshevBtn" Content="Chebyshev" Margin="3" Checked="Chebyshev_OnChecked"/>
+                       
+                    </StackPanel>
+                    <StackPanel  Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Margin="0,20,0,0" >
+                        <Button Content="OK" Click="ButtonOK_OnClick"/>
+                    </StackPanel>
+                    <StackPanel  Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Margin="0,20,0,0" >
+                        <Label x:Name="HistoryLabel" Content="History" Height="30"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="60"/>
+                        <Slider x:Name="HistorySlider" Minimum="1" Maximum="1" AutoToolTipPlacement="TopLeft" Value="1" ValueChanged="HistorySlider_OnValueChanged" IsEnabled="False"/>
+                    </StackPanel>
+                    <StackPanel  Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Margin="0,20,0,0" >
+                        <Label Content="Ctrl-Left click = Start" Height="30"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="160"/>
+                        <Label Content="Ctrl-Right click = Finish" Height="30"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="160"/>
+                        <Label Content="Space = Find way" Height="30"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="160"/>
+                    </StackPanel>
+                </DockPanel>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
+</controls:MetroWindow>
+    
+    
