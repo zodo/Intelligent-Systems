@@ -41,6 +41,10 @@
             while (opened.Any())
             {
                 var optimal = opened.OrderBy(c => c.FullDistance).First();
+                if (opened.Contains(end))
+                {
+                    optimal = end;
+                }
                 Debug.WriteLine($"ITER: {iterations}, optdist: {optimal.FullDistance}");
 
                 if (optimal == end)
@@ -59,15 +63,13 @@
                         neighbour.DistFromStart = optimal.DistFromStart + heuristic.Distance(optimal, neighbour);
                         neighbour.DistToEnd = heuristic.Distance(neighbour, end);
                     }
-                    else
-                    {
-                        if (optimal.DistFromStart + heuristic.Distance(optimal, neighbour) < neighbour.DistFromStart)
+                    else if (optimal.DistFromStart + heuristic.Distance(optimal, neighbour) < neighbour.DistFromStart)
                         {
                             neighbour.Previous = optimal;
                             neighbour.DistFromStart = optimal.DistFromStart + heuristic.Distance(optimal, neighbour);
                             neighbour.DistToEnd = heuristic.Distance(neighbour, end);
                         }
-                    }
+                    
                 }
 
                 var size = _maze.Size;

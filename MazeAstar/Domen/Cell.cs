@@ -8,6 +8,15 @@
 
     using Color = System.Windows.Media.Color;
 
+    public class Direction
+    {
+        public Point Destionation { get; set; }
+        public Point Restriction { get; set; }
+
+        public Point Restriction2 { get; set; }
+
+    }
+
     /// <summary>
     /// Клетка поля.
     /// </summary>
@@ -45,6 +54,22 @@
                         result.Add(Maze[point]);
                     }
                 }
+                foreach (var diagDir in _diagonals)
+                {
+                    var point = Maze[this];
+                    point.Offset(diagDir.Destionation.X, diagDir.Destionation.Y);
+                    if (Maze.PointFitsMaze(point))
+                    {
+                        var checkPoint = Maze[this];
+                        checkPoint.Offset(diagDir.Restriction);
+                        var checkPoint2 = Maze[this];
+                        checkPoint2.Offset(diagDir.Restriction2);
+                        if (Maze[checkPoint].Type != CellType.Wall && Maze[checkPoint2].Type != CellType.Wall)
+                        {
+                            result.Add(Maze[point]);
+                        }
+                    }
+                }
                 return result.Where(x => x.Type == CellType.Empty || x.Type == CellType.Finish || x.Type == CellType.Start).ToList();
             }
         }
@@ -52,7 +77,17 @@
         /// <summary>
         /// Возможные пути
         /// </summary>
-        private readonly Point[] _directions = new[] { new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
+        private readonly Point[] _directions = { new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
+
+
+        private readonly Direction[] _diagonals =
+        {
+            new Direction {Destionation = new Point(1,1), Restriction = new Point(1,0), Restriction2 = new Point(0,1)},
+            new Direction {Destionation = new Point(-1,-1), Restriction = new Point(-1,0), Restriction2 = new Point(0,1)},
+            new Direction {Destionation = new Point(1,-1), Restriction = new Point(0,-1), Restriction2 = new Point(1,0)},
+            new Direction {Destionation = new Point(-1, 1), Restriction = new Point(-1,0), Restriction2 = new Point(0,1)}   
+        };
+        
 
         public Cell(Maze maze, CellType type)
         {

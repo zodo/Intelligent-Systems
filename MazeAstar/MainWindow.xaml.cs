@@ -170,5 +170,11 @@
         {
             _mazeDrawer.DrawHistory((int)HistorySlider.Value);
         }
+
+        private void ButtonClear_OnClick(object sender, RoutedEventArgs e)
+        {
+            _mazeDrawer?.Maze?.ClearField();
+            _mazeDrawer?.Redraw();
+        }
     }
 }

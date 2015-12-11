@@ -25,7 +25,7 @@
         /// <summary>
         /// Поле с точками.
         /// </summary>
-        private readonly Dictionary<Point, Cell> _field = new Dictionary<Point, Cell>(); 
+        private Dictionary<Point, Cell> _field = new Dictionary<Point, Cell>(); 
 
         /// <summary>
         /// История состояний.
@@ -163,6 +163,19 @@
 
         private void ClearPath()
         {
+            Path = null;
+        }
+
+        public void ClearField()
+        {
+            _field = new Dictionary<Point, Cell>();
+            for (var x = 0; x < Size.Width; x++)
+            {
+                for (var y = 0; y < Size.Height; y++)
+                {
+                    _field.Add(new Point(x, y), new Cell(this, CellType.Empty));
+                }
+            }
             Path = null;
         }
     }
