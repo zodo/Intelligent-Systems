@@ -1,5 +1,6 @@
 ﻿namespace DecisionTree.ViewModel
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows;
@@ -11,6 +12,16 @@
         private string _value;
 
         private ObservableCollection<string> _possibleValues;
+
+        public AttributeViewModel(string name, string attr)
+        {
+            _name = name;
+            IsGoal = attr == "g";
+            if (attr == "d")
+            {
+                PossibleValues = new ObservableCollection<string>();
+            }
+        }
 
         public string Name
         {
@@ -52,10 +63,14 @@
             }
         }
 
-        private bool IsDiscrete => PossibleValues != null;
+        public bool IsDiscrete => PossibleValues != null;
 
         public Visibility TextBoxVisibility => !IsDiscrete ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility ComboBoxVisibility => IsDiscrete ? Visibility.Visible : Visibility.Collapsed;
+
+        public bool IsGoal { get; set; }
+
+        public List<string> Values { get; set; } = new List<string>();
     }
 }

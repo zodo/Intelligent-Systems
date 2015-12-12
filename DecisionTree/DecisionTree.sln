@@ -5,11 +5,6 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecisionTree", "DecisionTree\DecisionTree.csproj", "{D3C7EBFB-8614-43F2-9B24-A167BA60FCAB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".truefakes", ".truefakes", "{850C876A-A564-45ED-B60E-105B2235AE3D}"
-	ProjectSection(SolutionItems) = preProject
-		.truefakes\TrueFakes.targets = .truefakes\TrueFakes.targets
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

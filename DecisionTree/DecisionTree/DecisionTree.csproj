@@ -64,6 +64,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controller\FileReader.cs" />
+    <Compile Include="Model\Attribute.cs" />
+    <Compile Include="Model\Node.cs" />
     <Compile Include="ViewModel\AttributeViewModel.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
     <Compile Include="ViewModel\ObservableObject.cs" />

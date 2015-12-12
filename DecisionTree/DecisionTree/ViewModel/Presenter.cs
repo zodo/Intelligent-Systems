@@ -4,7 +4,12 @@
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Linq;
+    using System.Windows;
     using System.Windows.Input;
+
+    using Controller;
+
+    using Microsoft.Win32;
 
     public class Presenter : ObservableObject
     {
@@ -12,20 +17,38 @@
         {
             get
             {
-                return _attributes;
+                return new ObservableCollection<AttributeViewModel>(_attributes.Where(x => !x.IsGoal));
             }
             set
             {
                 _attributes = value;
                 RaisePropertyChangedEvent(nameof(Attributes));
+                RaisePropertyChangedEvent(nameof(CalculateBtnVisibility));
             }
         }
 
-        public ICommand AddNewControl => new DelegateCommand(AddNewCtrl);
+        public Visibility CalculateBtnVisibility => Attributes != null && Attributes.Any() ? Visibility.Visible : Visibility.Collapsed;
 
-        public ICommand ShowAdded => new DelegateCommand(ShowAttr);
+        public ICommand OpenFile => new DelegateCommand(OpenFileFunc);
+
+        public ICommand Calculate => new DelegateCommand(CalculateFunc);
 
         private ObservableCollection<AttributeViewModel> _attributes;
+
+        private TreeViewModel _treeViewModel;
+
+        public TreeViewModel TreeViewModel
+        {
+            get
+            {
+                return _treeViewModel;
+            }
+            set
+            {
+                _treeViewModel = value;
+                RaisePropertyChangedEvent(nameof(TreeViewModel));
+            }
+        }
 
         public Presenter()
         {
@@ -33,12 +56,23 @@
         }
 
 
-        private void AddNewCtrl()
+        private void OpenFileFunc()
         {
-            _attributes.Add(new AttributeViewModel {Name = Guid.NewGuid().ToString(), PossibleValues = new ObservableCollection<string> {"hi", "there", "johny"} });
+            var dialog = new OpenFileDialog { DefaultExt = ".tsv" };
+
+            var result = dialog.ShowDialog();
+
+            if (!result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+            var filereader = new FileReader(dialog.FileName);
+
+            Attributes = new ObservableCollection<AttributeViewModel>(filereader.ReadAttributes());
         }
 
-        private void ShowAttr()
+        private void CalculateFunc()
         {
             Debug.WriteLine(string.Join("\n", _attributes.Select(x => $"{x.Name}, {x.Value}")));
         }
