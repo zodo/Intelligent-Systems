@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:DecisionTree"
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="True"></Setter>
+        </Style>
     </Application.Resources>
 </Application>

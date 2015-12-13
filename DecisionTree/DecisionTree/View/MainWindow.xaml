@@ -10,6 +10,7 @@
     <Window.DataContext>
         <viewModel:Presenter/>
     </Window.DataContext>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -26,7 +27,7 @@
             
             <ItemsControl ItemsSource="{Binding Attributes}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModel:AttributeViewModel}">
+                    <DataTemplate DataType="{x:Type viewModel:Attribute}">
                         <Grid>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="{Binding Name}" Margin="5"/>
@@ -44,8 +45,8 @@
         <GridSplitter Grid.Row="0" Grid.Column="1"  Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center">
         </GridSplitter>
 
-        <TreeView Grid.Column="2" ItemsSource="{Binding TreeViewModel}">
-           <TreeView.ItemTemplate>
+        <TreeView Grid.Column="2" ItemsSource="{Binding Node}">
+            <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                     <TextBlock Text="{Binding Text}" />
                 </HierarchicalDataTemplate>
@@ -53,4 +54,5 @@
         </TreeView>
         
     </Grid>
+    
 </Window>

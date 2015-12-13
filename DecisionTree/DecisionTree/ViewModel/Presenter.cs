@@ -13,11 +13,11 @@
 
     public class Presenter : ObservableObject
     {
-        public ObservableCollection<AttributeViewModel> Attributes
+        public ObservableCollection<Attribute> Attributes
         {
             get
             {
-                return new ObservableCollection<AttributeViewModel>(_attributes.Where(x => !x.IsGoal));
+                return new ObservableCollection<Attribute>(_attributes.Where(x => !x.IsGoal));
             }
             set
             {
@@ -33,26 +33,26 @@
 
         public ICommand Calculate => new DelegateCommand(CalculateFunc);
 
-        private ObservableCollection<AttributeViewModel> _attributes;
+        private ObservableCollection<Attribute> _attributes;
 
-        private TreeViewModel _treeViewModel;
+        private ObservableCollection<Node>  _node = new ObservableCollection<Node>();
 
-        public TreeViewModel TreeViewModel
+        public ObservableCollection<Node> Node
         {
             get
             {
-                return _treeViewModel;
+                return _node;
             }
             set
             {
-                _treeViewModel = value;
-                RaisePropertyChangedEvent(nameof(TreeViewModel));
+                _node = value;
+                RaisePropertyChangedEvent(nameof(Node));
             }
         }
 
         public Presenter()
         {
-            _attributes = new ObservableCollection<AttributeViewModel>();
+            _attributes = new ObservableCollection<Attribute>();
         }
 
 
@@ -69,7 +69,11 @@
 
             var filereader = new FileReader(dialog.FileName);
 
-            Attributes = new ObservableCollection<AttributeViewModel>(filereader.ReadAttributes());
+            Attributes = new ObservableCollection<Attribute>(filereader.ReadAttributes());
+
+            var treeSolver = new DecisionTreeSolver(_attributes.ToList());
+
+            Node.Add(treeSolver.MountTree());
         }
 
         private void CalculateFunc()

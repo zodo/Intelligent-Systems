@@ -8,6 +8,8 @@
 
     using ViewModel;
 
+    using Attribute = ViewModel.Attribute;
+
     public class FileReader
     {
         private readonly string _fileName;
@@ -19,25 +21,25 @@
             _fileName = fileName;
         }
 
-        public List<AttributeViewModel> ReadAttributes()
+        public List<Attribute> ReadAttributes()
         {
             var attrs = ReadHeaders();
             FillAttrsWithData(attrs);
             return attrs;
         }
 
-        private List<AttributeViewModel> ReadHeaders()
+        private List<Attribute> ReadHeaders()
         {
             var headers = File.ReadAllLines(_fileName).First().Split('\t').ToList();
             
-            var attrs = headers.Select(x => new AttributeViewModel(x.Split('(', ')').First(), x.Split('(', ')').Skip(1).First())).ToList();
+            var attrs = headers.Select(x => new Attribute(x.Split('(', ')').First(), x.Split('(', ')').Skip(1).First())).ToList();
 
             GoalAttrName = attrs.Single(x => x.IsGoal).Name;
 
             return attrs;
         }
 
-        private void FillAttrsWithData(List<AttributeViewModel> attrs)
+        private void FillAttrsWithData(List<Attribute> attrs)
         {
             var inputTextLines = File.ReadAllLines(_fileName);
             for (var row = 1; row < inputTextLines.Length; row++)
