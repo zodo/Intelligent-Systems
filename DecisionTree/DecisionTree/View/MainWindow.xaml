@@ -48,7 +48,7 @@
         <TreeView Grid.Column="2" ItemsSource="{Binding Node}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Text}" />
+                    <TextBlock Text="{Binding Text}" Background="{Binding BackgroundColor}" Foreground="Black"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

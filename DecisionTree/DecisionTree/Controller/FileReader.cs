@@ -1,20 +1,14 @@
 ﻿namespace DecisionTree.Controller
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text.RegularExpressions;
-
-    using ViewModel;
 
     using Attribute = ViewModel.Attribute;
 
     public class FileReader
     {
         private readonly string _fileName;
-
-        public string GoalAttrName { get; set; }
 
         public FileReader(string fileName)
         {
@@ -34,8 +28,6 @@
             
             var attrs = headers.Select(x => new Attribute(x.Split('(', ')').First(), x.Split('(', ')').Skip(1).First())).ToList();
 
-            GoalAttrName = attrs.Single(x => x.IsGoal).Name;
-
             return attrs;
         }
 
@@ -45,7 +37,7 @@
             for (var row = 1; row < inputTextLines.Length; row++)
             {
                 var strValues = inputTextLines[row].Split('\t');
-                for (var valNum = 0; valNum < strValues.Length; valNum++)
+                for (var valNum = 0; valNum < attrs.Count; valNum++)
                 {
                     attrs[valNum].Values.Add(strValues[valNum]);
                     if (attrs[valNum].IsDiscrete && !attrs[valNum].PossibleValues.Contains(strValues[valNum]))

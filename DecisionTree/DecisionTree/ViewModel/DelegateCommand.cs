@@ -5,27 +5,11 @@
 
     class DelegateCommand : ICommand
     {
-        private bool _canExecuteCommand;
-
-        public bool CanExecuteCommand   
-        {
-            get
-            {
-                return _canExecuteCommand;
-            }
-            set
-            {
-                _canExecuteCommand = value;
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         private readonly Action _action;
 
         public DelegateCommand(Action action)
         {
             _action = action;
-            _canExecuteCommand = true;
         }
 
         /// <summary>
@@ -37,7 +21,7 @@
         /// <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
         public bool CanExecute(object parameter)
         {
-            return _canExecuteCommand;
+            return true;
         }
 
         /// <summary>

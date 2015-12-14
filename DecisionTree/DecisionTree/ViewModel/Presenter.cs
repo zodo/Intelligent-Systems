@@ -1,6 +1,5 @@
 ﻿namespace DecisionTree.ViewModel
 {
-    using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Linq;
@@ -37,6 +36,7 @@
 
         private ObservableCollection<Node>  _node = new ObservableCollection<Node>();
 
+
         public ObservableCollection<Node> Node
         {
             get
@@ -49,6 +49,8 @@
                 RaisePropertyChangedEvent(nameof(Node));
             }
         }
+
+        
 
         public Presenter()
         {
@@ -72,13 +74,14 @@
             Attributes = new ObservableCollection<Attribute>(filereader.ReadAttributes());
 
             var treeSolver = new DecisionTreeSolver(_attributes.ToList());
-
+            Node.Clear();
             Node.Add(treeSolver.MountTree());
         }
 
         private void CalculateFunc()
         {
-            Debug.WriteLine(string.Join("\n", _attributes.Select(x => $"{x.Name}, {x.Value}")));
+            var queryRunner = new QueryRunner(Node.First(), Attributes.ToList());
+            queryRunner.RunQuery();
         }
     }
 }

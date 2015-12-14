@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="Controller\DecisionTreeSolver.cs" />
     <Compile Include="Controller\FileReader.cs" />
+    <Compile Include="Controller\QueryRunner.cs" />
     <Compile Include="ViewModel\Attribute.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
     <Compile Include="ViewModel\ObservableObject.cs" />

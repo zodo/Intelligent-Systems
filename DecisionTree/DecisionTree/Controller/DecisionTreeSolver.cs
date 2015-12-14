@@ -12,7 +12,7 @@
     {
         private readonly List<Attribute> _samples;
 
-        private double _entropyForSet { get; set; }
+        private double EntropyForSet { get; set; }
 
         public DecisionTreeSolver(List<Attribute> samples)
         {
@@ -43,7 +43,7 @@
             var root = new Node(maxGainAttr, "");
 
             var goalValuesCount = GoalValuesCount(_samples);
-            _entropyForSet = CalcEntropy(goalValuesCount);
+            EntropyForSet = CalcEntropy(goalValuesCount);
 
             if (maxGainAttr.IsDiscrete)
             {
@@ -74,7 +74,7 @@
                         .Select(x => x.FilterValues(
                             maxGainAttr.Values
                             .Select((val, index) => new { index, val })
-                            .Where(val => Convert.ToInt32(val.val) < maxEntropyValue)
+                            .Where(val => Convert.ToDouble(val.val) < maxEntropyValue)
                             .Select(val => val.index)
                             .ToArray()))
                         .ToList();
@@ -84,7 +84,7 @@
                 root.Children.Add(curNode);
                 curNode.Children.Add(
                     lessSamples.All(x => x.Values.Count == 0)
-                        ? new Node(resultAttr, GetMostCommonValue(_samples))
+                        ? new Node(resultAttr, GetMostCommonValue(_samples)) { Operation = Operation.Less}
                         : dtLess.MountTree());
 
                 var geSamples = _samples
@@ -92,7 +92,7 @@
                         .Select(x => x.FilterValues(
                             maxGainAttr.Values
                             .Select((val, index) => new { index, val })
-                            .Where(val => Convert.ToInt32(val.val) >= maxEntropyValue)
+                            .Where(val => Convert.ToDouble(val.val) >= maxEntropyValue)
                             .Select(val => val.index)
                             .ToArray()))
                         .ToList();
@@ -101,25 +101,25 @@
                 root.Children.Add(curNode2);
                 curNode2.Children.Add(
                     geSamples.All(x => x.Values.Count == 0)
-                        ? new Node(resultAttr, GetMostCommonValue(_samples))
+                        ? new Node(resultAttr, GetMostCommonValue(_samples)) { Operation = Operation.MoreEq}
                         : dtGe.MountTree());
             }
 
             return root;
         }
 
-        private Tuple<int, double> CalcMaxEntropy(List<Attribute> sample, Attribute curAttr)
+        private Tuple<double, double> CalcMaxEntropy(List<Attribute> sample, Attribute curAttr)
         {
-            var totalDic = new Dictionary<int, double>();
+            var totalDic = new Dictionary<double, double>();
             foreach (var t in curAttr.Values)
             {
                 var col = sample.Single(x => x.Name == curAttr.Name).Values.ToList();
                 var totalCountValues = col.Count;
-                var curT = int.Parse(t);
+                var curT = double.Parse(t);
                 var lessT = new List<int>();
                 for (var j = 0; j < totalCountValues; j++)
                 {
-                    var curX = int.Parse(col[j]);
+                    var curX = double.Parse(col[j]);
                     if (curX < curT)
                     {
                         lessT.Add(j);
@@ -132,7 +132,7 @@
                 var geT = new List<int>();
                 for (var j = 0; j < totalCountValues; j++)
                 {
-                    var curX = int.Parse(col[j]);
+                    var curX = double.Parse(col[j]);
                     if (curX >= curT)
                     {
                         geT.Add(j);
@@ -143,7 +143,7 @@
                 var geEntropy = CalcEntropy(dictValsGe);
 
                 var entropyForT = pLess * lessEntropy + pGe * geEntropy;
-                var resEntropy = _entropyForSet - entropyForT;
+                var resEntropy = EntropyForSet - entropyForT;
 
                 if (!totalDic.ContainsKey(curT))
                 {
@@ -175,9 +175,8 @@
         private double Gain(List<Attribute> samples, Attribute attribute)
         {
             var dict = attribute
-                .Values
-                .Distinct()
-                .ToDictionary(x => x, x => attribute.Values.Count(y => y == x));
+                .Values.GroupBy(x => x)
+                .ToDictionary(x => x.Key, y => y.Count());
 
             double sum = 0;
 
@@ -196,7 +195,7 @@
                 sum += targEntropy > 0 ? targEntropy : 0;
             }
 
-            var result = _entropyForSet - sum;
+            var result = EntropyForSet - sum;
             attribute.InfoGain = result;
             return result;
         }

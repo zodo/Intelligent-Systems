@@ -1,13 +1,23 @@
 ﻿namespace DecisionTree.ViewModel
 {
-    using System.Collections.Generic;
+    using System;
     using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Windows.Media;
 
     public class Node : ObservableObject
     {
         private ObservableCollection<Node> _children = new ObservableCollection<Node>();
 
-        private string _text;
+        private bool _isSelected;
+
+        public Operation? Operation { get; set; }
+
+        public Brush BackgroundColor => IsSelected ? Brushes.PaleGreen : Brushes.White;
+
+        public Attribute Attribute { get; }
+
+        public string Value { get; }
 
         public ObservableCollection<Node> Children    
         {
@@ -26,26 +36,64 @@
         {
             get
             {
-                return Operation != null? Operation + " " + _text : "" + _text;
+                
+                return $"{Attribute?.Name ?? ""} {OperationExtension.ToString(Operation)} {Value??""}";
             }
             set
             {
-                _text = value;
                 RaisePropertyChangedEvent(nameof(Text));
             }
         }
 
-
-        public Operation? Operation { get; set; }
-
-        public Node(Attribute attr, string value)
+        public bool IsSelected
         {
-            Text = $"{attr.Name}: {value}";
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                _isSelected = value;
+                RaisePropertyChangedEvent(nameof(IsSelected));
+                RaisePropertyChangedEvent(nameof(BackgroundColor));
+            }
+        }
+
+        public Node(Attribute attribute, string value)
+        {
+            Attribute = attribute;
+            Value = value;
+        }
+
+        public void ClearSelection()
+        {
+            IsSelected = false;
+            Children.ToList().ForEach(x => x.ClearSelection());
         }
     }
 
     public enum Operation
     {
         Less, MoreEq, Eq
+    }
+
+    public static class OperationExtension
+    {
+        public static string ToString(this Operation? op)
+        {
+            switch (op)
+            {
+                case Operation.Less:
+                    return "<";
+                case Operation.MoreEq:
+                    return ">=";
+                case Operation.Eq:
+                    return "=";
+                case null:
+                    return "";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(op), op, null);
+            }
+        }
     }
 }
