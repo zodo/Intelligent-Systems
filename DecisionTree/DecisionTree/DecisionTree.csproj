@@ -65,6 +65,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controller\DecisionTreeSolver.cs" />
+    <Compile Include="Controller\DTreeSolveMethods.cs" />
     <Compile Include="Controller\FileReader.cs" />
     <Compile Include="Controller\QueryRunner.cs" />
     <Compile Include="ViewModel\Attribute.cs" />
