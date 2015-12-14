@@ -8,6 +8,9 @@
 
     using Attribute = ViewModel.Attribute;
 
+    /// <summary>
+    /// Построитель дерева решений.
+    /// </summary>
     public class DecisionTreeSolver
     {
         private readonly List<Attribute> _samples;
@@ -19,6 +22,10 @@
             _samples = samples;
         }
 
+        /// <summary>
+        /// Построить дерево.
+        /// </summary>
+        /// <returns>Дерево принятия решений.</returns>
         public Node MountTree()
         {
             if (_samples.All(x => x.IsGoal))
@@ -108,6 +115,7 @@
             return root;
         }
 
+        
         private Tuple<double, double> CalcMaxEntropy(List<Attribute> sample, Attribute curAttr)
         {
             var totalDic = new Dictionary<double, double>();
@@ -168,6 +176,7 @@
                             .Where((x2, i) => indexes.Contains(i))
                             .Count(y => x == y));
 
+        
         private double CalcEntropy(Dictionary<string, int> goalValsCount) => goalValsCount
             .Select(dictVal => (double)dictVal.Value / goalValsCount.Sum(x => x.Value))
             .Select(curPart => curPart > 0 ? -curPart * Math.Log(curPart, 2) : 0).Sum();

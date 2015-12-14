@@ -3,6 +3,9 @@
     using System;
     using System.Windows.Input;
 
+    /// <summary>
+    /// Команда - делегат.
+    /// </summary>
     class DelegateCommand : ICommand
     {
         private readonly Action _action;

@@ -8,6 +8,9 @@
 
     using Attribute = ViewModel.Attribute;
 
+    /// <summary>
+    /// Исполнитель запросов к дереву.
+    /// </summary>
     public class QueryRunner
     {
         private readonly Node _startNode;
@@ -20,6 +23,9 @@
             _attributes = attributes;
         }
 
+        /// <summary>
+        /// Выполнить запрос.
+        /// </summary>
         public void RunQuery()
         {
             _startNode.ClearSelection();

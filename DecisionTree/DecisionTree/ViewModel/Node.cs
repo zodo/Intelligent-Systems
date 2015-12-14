@@ -5,6 +5,9 @@
     using System.Linq;
     using System.Windows.Media;
 
+    /// <summary>
+    /// Вершина дерева.
+    /// </summary>
     public class Node : ObservableObject
     {
         private ObservableCollection<Node> _children = new ObservableCollection<Node>();
@@ -72,6 +75,9 @@
         }
     }
 
+    /// <summary>
+    /// Условие перехода.
+    /// </summary>
     public enum Operation
     {
         Less, MoreEq, Eq

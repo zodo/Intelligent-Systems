@@ -6,6 +6,9 @@
 
     using Attribute = ViewModel.Attribute;
 
+    /// <summary>
+    /// Считыватель tsv файлов.
+    /// </summary>
     public class FileReader
     {
         private readonly string _fileName;
@@ -15,6 +18,10 @@
             _fileName = fileName;
         }
 
+        /// <summary>
+        /// Прочитать атрибуты из файла.
+        /// </summary>
+        /// <returns></returns>
         public List<Attribute> ReadAttributes()
         {
             var attrs = ReadHeaders();
