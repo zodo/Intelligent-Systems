@@ -30,7 +30,7 @@ namespace NumberRecognition.Test
             var wbm = BitmapFactory.New(30, 30);
             wbm.Clear(Colors.White);
             // Act
-            var bytes = imgop.GetImageBytes(wbm);
+            var bytes = imgop.BitmapToVector(wbm);
             // Assert
             Assert.IsTrue(bytes.All(x => x == 0));
         }
@@ -43,7 +43,7 @@ namespace NumberRecognition.Test
             var wbm = BitmapFactory.New(30, 30);
             wbm.Clear(Colors.Black);
             // Act
-            var bytes = imgop.GetImageBytes(wbm);
+            var bytes = imgop.BitmapToVector(wbm);
             // Assert
             Assert.IsTrue(bytes.All(x => x == 1));
         }

@@ -70,16 +70,18 @@
     </Compile>
     <Compile Include="Bounds.cs" />
     <Compile Include="ImageOperations.cs" />
-    <Compile Include="Network\Layer.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Network\Dataset.cs" />
     <Compile Include="Network\Manager.cs" />
-    <Compile Include="Network\Web.cs" />
+    <Compile Include="Network\Network.cs" />
     <Compile Include="Network\Neuron.cs" />
+    <Compile Include="Network\Sigmoid.cs" />
+    <Compile Include="Network\Synapse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

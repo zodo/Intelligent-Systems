@@ -15,37 +15,32 @@ using System.Windows.Shapes;
 
 namespace NumberRecognition
 {
+    using System.Threading;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private WriteableBitmap _bitmap;
-
-        private Bounds _bounds;
-
         private readonly ImageOperations _imgOperations = new ImageOperations();
 
         private readonly Manager _manager = new Manager();
 
-        private Point? _prevPos = null;
+        private Point? _prevPos;
+
+        private WriteableBitmap _bitmap;
+
+        private Bounds _bounds;
+
+        private CancellationTokenSource _cts;
 
         public MainWindow()
         {
             InitializeComponent();
+            ProgressBorder.Visibility = Visibility.Hidden;
         }
 
-        private void MainWindow_OnContentRendered(object sender, EventArgs e)
-        {
-            _bitmap = BitmapFactory.New(220, 280);
-            _bitmap.Clear(Colors.White);
-            NumberImg.Source = _bitmap;
-            _bounds = new Bounds();
-            
-        }
-
-        
-        private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
+        private void Clear()
         {
             _bitmap = BitmapFactory.New(220, 280);
             _bitmap.Clear(Colors.White);
@@ -53,8 +48,50 @@ namespace NumberRecognition
             _bounds = new Bounds();
             _prevPos = null;
         }
+        private async Task RecognizeNumber()
+        {
+            var bmp = _imgOperations.CropResize(_bitmap, _bounds);
+            var bytes = _imgOperations.BitmapToVector(bmp);
+            var result = await _manager.Recognize(bytes);
+            ResultsTxt.Text = string.Join(Environment.NewLine,
+                result
+                .Select((x, i) => new { x, i })
+                .OrderByDescending(x => x.x)
+                .Where(x => x.x > 0.01)
+                .Select(x => $"{x.i} - {x.x.ToString("F")}"));
+        }
 
-        private void NumberImg_OnMouseMove(object sender, MouseEventArgs e)
+        private void MainWindow_OnContentRendered(object sender, EventArgs e)
+        {
+            Clear();
+        }
+        
+        private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            Clear();
+        }
+
+        private async void Recognize_OnClick(object sender, RoutedEventArgs e)
+        {
+            await RecognizeNumber();
+        }
+
+        private void NumberImg_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _prevPos = null;
+        }
+
+        private void NumberImg_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                Clear();
+                return;
+            }
+            _prevPos = e.GetPosition(NumberImg);
+        }
+
+        private async void NumberImg_OnMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -67,46 +104,17 @@ namespace NumberRecognition
                 _bounds.WasModified = true;
                 if (_prevPos != null)
                 {
-                    DrawEllipses((int)pos.X, (int)_prevPos.Value.X,(int)pos.Y, (int)_prevPos.Value.Y);
+                    _imgOperations.DrawEllipses(_bitmap, (int)pos.X, (int)_prevPos.Value.X,(int)pos.Y, (int)_prevPos.Value.Y);
                 }
                 _prevPos = pos;
 
-            }
-        }
-
-        private void DrawEllipses(int x0, int x1, int y0, int y1)
-        {
-            if (x0 > x1)
-            {
-                var t = x0;
-                x0 = x1;
-                x1 = t;
-            }
-            if (y0 > y1)
-            {
-                var t = y0;
-                y0 = y1;
-                y1 = t;
-            }
-            int deltax = Math.Abs(x1 - x0);
-            int deltay = Math.Abs(y1 - y0);
-            int error = 0;
-            int deltaerr = deltay;
-            int y = y0;
-            for (int x = x0; x < x1; x++)
-            {
-                _bitmap.FillEllipseCentered(x, y, 4, 4, Colors.Black);
-
-                error = error + deltaerr;
-                if (2 * error >= deltax)
+                if (RecognizeOnTheFly.IsEnabled && RecognizeOnTheFly.IsChecked.HasValue && RecognizeOnTheFly.IsChecked.Value)
                 {
-                    y = y - 1;
-                    error = error - deltax;
+                    await RecognizeNumber();
                 }
             }
         }
-     
-
+        
         private void SaveNumberBtn_OnClick(object sender, RoutedEventArgs e)
         {
             if (_bounds.WasModified)
@@ -120,35 +128,31 @@ namespace NumberRecognition
 
         private async void LearnBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            LearnBtn.IsEnabled = false;
-            Window.IsEnabled = false;
-            RecognizeInProccessLbl.Visibility = Visibility.Visible;
-            await _manager.Learn();
-            Window.IsEnabled = true;
-            RecognizeInProccessLbl.Visibility = Visibility.Hidden;
+            ProgressBar.Value = 0;
+            ProgressBorder.Visibility = Visibility.Visible;
+            var savedTime = DateTime.Now;
+            _cts= new CancellationTokenSource();
+
+            try
+            {
+                var epochs =
+                    await _manager.Learn(new Progress<int>(x => ProgressBar.Value = x), _cts.Token).ConfigureAwait(true);
+                ResultsTxt.Text =
+                    $"Обучение окончено.\nКол-во эпох: {epochs}\nВремя: {(DateTime.Now - savedTime).TotalSeconds.ToString("F1")} с.";
+            }
+            catch (OperationCanceledException)
+            {
+                ResultsTxt.Text = "Обучение прервано";
+            }
+            ProgressBorder.Visibility = Visibility.Hidden;
             Recognize.IsEnabled = true;
-                   
+            RecognizeOnTheFly.IsEnabled = true;
+
         }
 
-        private void Recognize_OnClick(object sender, RoutedEventArgs e)
+        private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var bmp = _imgOperations.CropResize(_bitmap, _bounds);
-            var bytes = _imgOperations.GetImageBytes(bmp);
-            ResultsTxt.Text = string.Join(Environment.NewLine, 
-                _manager.Recognize(bytes)
-                .Select((x, i) => new {x, i})
-                .OrderByDescending(x => x.x)
-                .Select(x => $"{x.i} - {x.x}"));
-        }
-
-        private void NumberImg_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            _prevPos = null;
-        }
-
-        private void NumberImg_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            _prevPos = e.GetPosition(NumberImg);
+            _cts?.Cancel();
         }
     }
 }

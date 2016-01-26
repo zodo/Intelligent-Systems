@@ -3,9 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NumberRecognition"
         mc:Ignorable="d"
-        Title="MainWindow" Height="336" Width="440"
+        Title="Распознавание цифр" Height="336" Width="440"
         ContentRendered="MainWindow_OnContentRendered"
         x:Name="Window">
     <Grid>
@@ -15,7 +14,8 @@
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="88" Margin="235,10,0,0" VerticalAlignment="Top" Width="183">
             <Grid>
                 <ComboBox x:Name="NumbersCmb" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="65">
-                    <ComboBoxItem IsSelected="True">1</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True">0</ComboBoxItem>
+                    <ComboBoxItem>1</ComboBoxItem>
                     <ComboBoxItem>2</ComboBoxItem>
                     <ComboBoxItem>3</ComboBoxItem>
                     <ComboBoxItem>4</ComboBoxItem>
@@ -24,7 +24,6 @@
                     <ComboBoxItem>7</ComboBoxItem>
                     <ComboBoxItem>8</ComboBoxItem>
                     <ComboBoxItem>9</ComboBoxItem>
-                    <ComboBoxItem>0</ComboBoxItem>
                 </ComboBox>
                 <Button x:Name="SaveNumberBtn" Content="Сохранить" HorizontalAlignment="Left" Margin="92,18,0,0" VerticalAlignment="Top" Width="75" Click="SaveNumberBtn_OnClick"/>
                 <Button x:Name="LearnBtn" Content="Обучаться" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Width="157" Click="LearnBtn_OnClick"/>
@@ -33,14 +32,20 @@
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="187" Margin="235,103,0,0" VerticalAlignment="Top" Width="183">
             <Grid>
                 <Button x:Name="Recognize" IsEnabled="False" Content="Распознать" HorizontalAlignment="Left" VerticalAlignment="Top" Width="157" Click="Recognize_OnClick" Margin="9,9,0,0"/>
-                <TextBox x:Name="ResultsTxt" HorizontalAlignment="Left" Height="141" Margin="10,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="156" IsReadOnly="True"/>
+                <TextBox x:Name="ResultsTxt" HorizontalAlignment="Left" Height="121" Margin="10,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="156" IsReadOnly="True"/>
+                <CheckBox x:Name="RecognizeOnTheFly" IsChecked="True" IsEnabled="False" Content="Распознавать на лету" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,34,0,0"/>
 
             </Grid>
         </Border>
-        <Button x:Name="ClearBtn" Content="X" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="20" Click="ClearBtn_OnClick"/>
-        <Grid HorizontalAlignment="Left" Height="100" Margin="14,103,0,0" VerticalAlignment="Top" Width="408">
-            <Label x:Name="RecognizeInProccessLbl" Visibility="Hidden" Content="Идет обучение" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" Background="#330E0E0E"/>
+        <Button Content="X" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="20" Click="ClearBtn_OnClick"/>
+        <Grid x:Name="ProgressBorder"  Visibility="Visible" Background="#B2FFFFFF">
+        <Border BorderBrush="DarkSlateGray" BorderThickness="2"  HorizontalAlignment="Left" Height="134" Margin="43,50,0,0" VerticalAlignment="Top" Width="356" Background="White">
+            <Grid>
+                <Label Content="Идет обучение" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32"  Height="68" Margin="60,-4,60,66" Foreground="Black"/>
+                <ProgressBar Name="ProgressBar" HorizontalAlignment="Left" Height="24" Margin="10,55,0,0" VerticalAlignment="Top" Width="332"/>
+                <Button IsEnabled="True" Content="Отмена" HorizontalAlignment="Left" Margin="267,98,0,0" VerticalAlignment="Top" Width="75" Click="CancelButton_OnClick"/>
+            </Grid>
+        </Border>
         </Grid>
-
     </Grid>
 </Window>

@@ -1,10 +1,8 @@
 namespace NumberRecognition.Test
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    using NumberRecognition;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -12,34 +10,24 @@ namespace NumberRecognition.Test
     {
 
         [TestMethod]
-        public void NeuronInitialize_CorrectlyInitialize()
+        public void XorNetworkCalculation()
         {
             // Arrange
-            var neuron = new Neuron(42);
+            var network = new Network(2, 10, 1);
+
+            var datasets = new List<DataSet>
+            {
+                new DataSet(new double[] { 0, 0 }, new double[] { 0 }),
+                new DataSet(new double[] { 0, 1 }, new double[] { 1 }),
+                new DataSet(new double[] { 1, 0 }, new double[] { 1 }),
+                new DataSet(new double[] { 1, 1 }, new double[] { 0 })
+            };
+
             // Act
-            var inputsCount = neuron.Inputs;
-            var weightsCount = neuron.Weights.Count;
-            var deltaCount = neuron.Deltas.Count;
+            network.Train(datasets, 0.05);
+            var answer = network.Compute(new double[] {1, 1});
             // Assert
-            Assert.AreEqual(42, inputsCount);
-            Assert.AreEqual(42, weightsCount);
-            Assert.AreEqual(42, deltaCount);
+            Assert.IsTrue(answer.First() < 0.1);
         }
-
-        [TestMethod]
-        public void Layer()
-        {
-            // Arrange
-            var network = new Web(2, 2);
-            var tuple = new Tuple<byte[], byte[]>(new byte[] { 0, 1 }, new byte[] { 1, 0 });
-            var tuples = Enumerable.Range(0, 100).Select(x => tuple);
-            // Act
-            network.Teach(tuples, 1);
-            var answer = network.Recognize(new byte[] { 0, 1 });
-            // Assert
-            Assert.IsTrue(1 - answer.First() < 0.05);
-        }
-
-
     }
 }

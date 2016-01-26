@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     using Point = System.Windows.Point;
@@ -37,7 +38,7 @@
             }
         }
 
-        public IEnumerable<byte[]> GetImagesBytesForDigit(int num)
+        public IEnumerable<double[]> GetImagesBytesForDigit(int num)
         {
             var path = $"images/{num}";
             if (!Directory.Exists(path))
@@ -56,24 +57,56 @@
 
                 var wbm = new WriteableBitmap(img);
 
-                var bytes = GetImageBytes(wbm);
-                yield return bytes;
+                var vector = BitmapToVector(wbm);
+                yield return vector;
                 
             }
         }
 
-        public byte[] GetImageBytes(WriteableBitmap wbm)
+        public double[] BitmapToVector(WriteableBitmap wbm)
         {
-            var bytes = new List<byte>();
+            var vector = new List<double>();
             wbm.ForEach(
                 (x, y, color) =>
                 {
                     var one = color.R < 20 || color.G < 20 || color.R < 20;
-                    bytes.Add((byte)(one ? 1 : 0));
+                    vector.Add(one ? 1 : 0);
                     return color;
                 });
             
-            return bytes.ToArray();
+            return vector.ToArray();
+        }
+
+        public void DrawEllipses(WriteableBitmap bitmap, int x0, int x1, int y0, int y1)
+        {
+            if (x0 > x1)
+            {
+                var t = x0;
+                x0 = x1;
+                x1 = t;
+            }
+            if (y0 > y1)
+            {
+                var t = y0;
+                y0 = y1;
+                y1 = t;
+            }
+            int deltax = Math.Abs(x1 - x0);
+            int deltay = Math.Abs(y1 - y0);
+            int error = 0;
+            int deltaerr = deltay;
+            int y = y0;
+            for (int x = x0; x < x1; x++)
+            {
+                bitmap.FillEllipseCentered(x, y, 4, 4, Colors.Black);
+
+                error = error + deltaerr;
+                if (2 * error >= deltax)
+                {
+                    y = y - 1;
+                    error = error - deltax;
+                }
+            }
         }
     }
 }
