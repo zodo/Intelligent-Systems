@@ -43,7 +43,7 @@
             var path = $"images/{num}";
             if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path);
+                yield break;
             }
             var files = Directory.GetFiles(path).Select(Path.GetFullPath).ToList();
             foreach (var file in files)

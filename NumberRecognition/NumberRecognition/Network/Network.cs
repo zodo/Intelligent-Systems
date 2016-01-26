@@ -43,6 +43,11 @@
 		
 		public int Train(List<DataSet> dataSets, double minimumError, IProgress<int> progress = null, CancellationToken ctk = default(CancellationToken))
 		{
+		    if (!dataSets.Any())
+		    {
+		        return 0;
+		    }
+
 			var error = 1.0;
 			var numEpochs = 0;
 		    double? startError = null;
