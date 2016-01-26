@@ -29,7 +29,7 @@
                 }
                 var pLess = (double)lessT.Count / totalCountValues;
                 var dictValsLess = CalcDiffsOnRes(sample, lessT);
-                var lessEntropy = CalcEntropy(dictValsLess);
+                var lessEntropy = GetEntropy(dictValsLess);
 
                 var geT = new List<int>();
                 for (var j = 0; j < totalCountValues; j++)
@@ -42,7 +42,7 @@
                 }
                 var pGe = (double)geT.Count / totalCountValues;
                 var dictValsGe = CalcDiffsOnRes(sample, geT);
-                var geEntropy = CalcEntropy(dictValsGe);
+                var geEntropy = GetEntropy(dictValsGe);
 
                 var entropyForT = pLess * lessEntropy + pGe * geEntropy;
                 var resEntropy = EntropyForSet - entropyForT;
@@ -70,7 +70,7 @@
                             .Where((x2, i) => indexes.Contains(i))
                             .Count(y => x == y));
 
-        public double CalcEntropy(Dictionary<string, int> goalValsCount) => goalValsCount
+        public double GetEntropy(Dictionary<string, int> goalValsCount) => goalValsCount
             .Select(dictVal => (double)dictVal.Value / goalValsCount.Sum(x => x.Value))
             .Select(curPart => curPart > 0 ? -curPart * Math.Log(curPart, 2) : 0).Sum();
 
@@ -90,7 +90,7 @@
             foreach (var val in dict)
             {
                 var valsDict = GetValuesToAttribute(samples, attribute, val.Key);
-                var entropy = CalcEntropy(valsDict);
+                var entropy = GetEntropy(valsDict);
                 var valProb = (double)val.Value / dict.Sum(x => x.Value);
 
                 var targEntropy = valProb * entropy;
@@ -131,7 +131,7 @@
                 .ToDictionary(x => x.Key, y => y.Count());
         }
 
-        public string GetMostCommonValue(List<Attribute> samples)
+        public string GetMostFrequentlyValue(List<Attribute> samples)
         {
             var count = GoalValuesCount(samples);
             return count.First(x => x.Value == count.Max(y => y.Value)).Key;

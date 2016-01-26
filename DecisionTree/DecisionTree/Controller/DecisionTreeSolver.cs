@@ -29,13 +29,15 @@
         /// <returns>Дерево принятия решений.</returns>
         public Node MountTree()
         {
+            // Остался только целевой атрибут.
             if (_samples.All(x => x.IsGoal))
             {
                 var attr = _samples.Single(x => x.IsGoal);
-                var mostCommon = _solveMethods.GetMostCommonValue(_samples);
+                var mostCommon = _solveMethods.GetMostFrequentlyValue(_samples);
                 return new Node(attr, mostCommon);
             }
 
+            // Значения целевого атрибута не отличаются
             if (_samples.Single(x => x.IsGoal).Values.Distinct().Count() == 1)
             {
                 var attr = _samples.Single(x => x.IsGoal);
@@ -51,7 +53,7 @@
             var root = new Node(maxGainAttr, "");
 
             var goalValuesCount = _solveMethods.GoalValuesCount(_samples);
-            _solveMethods.EntropyForSet = _solveMethods.CalcEntropy(goalValuesCount);
+            _solveMethods.EntropyForSet = _solveMethods.GetEntropy(goalValuesCount);
 
             if (maxGainAttr.IsDiscrete)
             {
@@ -92,7 +94,7 @@
                 root.Children.Add(curNode);
                 curNode.Children.Add(
                     lessSamples.All(x => x.Values.Count == 0)
-                        ? new Node(resultAttr, _solveMethods.GetMostCommonValue(_samples)) { Operation = Operation.Less}
+                        ? new Node(resultAttr, _solveMethods.GetMostFrequentlyValue(_samples)) { Operation = Operation.Less}
                         : dtLess.MountTree());
 
                 var geSamples = _samples
@@ -109,7 +111,7 @@
                 root.Children.Add(curNode2);
                 curNode2.Children.Add(
                     geSamples.All(x => x.Values.Count == 0)
-                        ? new Node(resultAttr, _solveMethods.GetMostCommonValue(_samples)) { Operation = Operation.MoreEq}
+                        ? new Node(resultAttr, _solveMethods.GetMostFrequentlyValue(_samples)) { Operation = Operation.MoreEq}
                         : dtGe.MountTree());
             }
 

@@ -60,7 +60,7 @@ namespace DecisionTree.Test
             var solveMethods = new DTreeSolveMethods();
             var attr = new Attribute("TestAttr", "g") { Values = { "Test", "Test2", "Test2" } };
             // Act
-            var value = solveMethods.GetMostCommonValue(new List<Attribute> { attr });
+            var value = solveMethods.GetMostFrequentlyValue(new List<Attribute> { attr });
             // Assert
             Assert.AreEqual("Test2", value);
         }
@@ -72,7 +72,7 @@ namespace DecisionTree.Test
             var dic = new Dictionary<string, int> { { "No", 5 }, { "Yes", 6 } };
             var solveMethods = new DTreeSolveMethods();
             // Act
-            var entropy = solveMethods.CalcEntropy(dic);
+            var entropy = solveMethods.GetEntropy(dic);
             // Assert
             Assert.IsTrue(Math.Abs(0.99403021147695647 - entropy) < 0.001);
         }

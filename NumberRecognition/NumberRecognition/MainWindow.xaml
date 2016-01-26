@@ -1,0 +1,46 @@
+﻿<Window x:Class="NumberRecognition.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NumberRecognition"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="336" Width="440"
+        ContentRendered="MainWindow_OnContentRendered"
+        x:Name="Window">
+    <Grid>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="280" Margin="10,10,0,0" VerticalAlignment="Top" Width="220">
+            <Image x:Name="NumberImg" MouseMove="NumberImg_OnMouseMove" MouseDown="NumberImg_OnMouseDown" MouseUp="NumberImg_OnMouseUp"/>
+        </Border>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="88" Margin="235,10,0,0" VerticalAlignment="Top" Width="183">
+            <Grid>
+                <ComboBox x:Name="NumbersCmb" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="65">
+                    <ComboBoxItem IsSelected="True">1</ComboBoxItem>
+                    <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBoxItem>3</ComboBoxItem>
+                    <ComboBoxItem>4</ComboBoxItem>
+                    <ComboBoxItem>5</ComboBoxItem>
+                    <ComboBoxItem>6</ComboBoxItem>
+                    <ComboBoxItem>7</ComboBoxItem>
+                    <ComboBoxItem>8</ComboBoxItem>
+                    <ComboBoxItem>9</ComboBoxItem>
+                    <ComboBoxItem>0</ComboBoxItem>
+                </ComboBox>
+                <Button x:Name="SaveNumberBtn" Content="Сохранить" HorizontalAlignment="Left" Margin="92,18,0,0" VerticalAlignment="Top" Width="75" Click="SaveNumberBtn_OnClick"/>
+                <Button x:Name="LearnBtn" Content="Обучаться" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Width="157" Click="LearnBtn_OnClick"/>
+            </Grid>
+        </Border>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="187" Margin="235,103,0,0" VerticalAlignment="Top" Width="183">
+            <Grid>
+                <Button x:Name="Recognize" IsEnabled="False" Content="Распознать" HorizontalAlignment="Left" VerticalAlignment="Top" Width="157" Click="Recognize_OnClick" Margin="9,9,0,0"/>
+                <TextBox x:Name="ResultsTxt" HorizontalAlignment="Left" Height="141" Margin="10,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="156" IsReadOnly="True"/>
+
+            </Grid>
+        </Border>
+        <Button x:Name="ClearBtn" Content="X" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="20" Click="ClearBtn_OnClick"/>
+        <Grid HorizontalAlignment="Left" Height="100" Margin="14,103,0,0" VerticalAlignment="Top" Width="408">
+            <Label x:Name="RecognizeInProccessLbl" Visibility="Hidden" Content="Идет обучение" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" Background="#330E0E0E"/>
+        </Grid>
+
+    </Grid>
+</Window>
