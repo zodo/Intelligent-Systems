@@ -29,8 +29,10 @@ namespace NumberRecognition.Test
             var imgop = new ImageOperations();
             var wbm = BitmapFactory.New(30, 30);
             wbm.Clear(Colors.White);
+
             // Act
             var bytes = imgop.BitmapToVector(wbm);
+
             // Assert
             Assert.IsTrue(bytes.All(x => x == 0));
         }
@@ -42,8 +44,10 @@ namespace NumberRecognition.Test
             var imgop = new ImageOperations();
             var wbm = BitmapFactory.New(30, 30);
             wbm.Clear(Colors.Black);
+
             // Act
             var bytes = imgop.BitmapToVector(wbm);
+
             // Assert
             Assert.IsTrue(bytes.All(x => x == 1));
         }
@@ -55,6 +59,7 @@ namespace NumberRecognition.Test
             var imgop = new ImageOperations();
             var wbm = BitmapFactory.New(30, 30);
             wbm.Clear(Colors.Black);
+
             // Act
             imgop.SaveImage(wbm, 42, "test");
             var bytes = imgop.GetImagesBytesForDigit(42).First();
